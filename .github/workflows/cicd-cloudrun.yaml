@@ -16,10 +16,11 @@ jobs:
         uses: actions/checkout@v2
 
       # Set up Google Cloud SDK
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.5.0
+      - name: Install and configure gcloud
+        uses: google-github-actions/setup-gcloud@v0
         with:
-          version: 'latest'
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       # Authenticate with Google Cloud
       - name: Authenticate with Google Cloud
