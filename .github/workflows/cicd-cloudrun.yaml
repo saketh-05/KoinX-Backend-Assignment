@@ -1,0 +1,50 @@
+name: CI/CD for Cloud Run
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on changes to the main branch
+
+jobs:
+  deploy:
+    name: Deploy to Google Cloud Run
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Google Cloud SDK
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.5.0
+        with:
+          version: 'latest'
+
+      # Authenticate with Google Cloud
+      - name: Authenticate with Google Cloud
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" > $HOME/gcloud-key.json
+          gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
+      # Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA .
+
+      # Push Docker image to Google Container Registry
+      - name: Push Docker image to GCR
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA
+
+      # Deploy to Google Cloud Run
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy your-app \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated
