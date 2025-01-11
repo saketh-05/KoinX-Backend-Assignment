@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
+      # ✅ Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Google Cloud SDK
+      # ✅ Set up Google Cloud SDK
       - name: Install and configure gcloud
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -23,13 +23,18 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-            
-      # Create Artifact Registry repository if it doesn't exist
+      # ✅ Set Google Cloud account and region
+      - name: Set GCloud config
+        run: |
+          gcloud config set account ${{ secrets.GCP_SA_EMAIL }}
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud config set run/region ${{ secrets.REGION }}
+
+      # ✅ Create Artifact Registry repository if it doesn't exist
       - name: Create Artifact Registry repository if it doesn't exist
         run: |
-          $ gcloud config set account ACCOUNT
-          REPO_NAME=koinx-assignment
-          REGION=asia-south1
+          REPO_NAME=${{ secrets.REPO_NAME }}
+          REGION=${{ secrets.REGION }}
           # Check if the repository exists
           REPO_EXISTS=$(gcloud artifacts repositories list --filter="name:$REPO_NAME" --format="value(name)")
           if [ -z "$REPO_EXISTS" ]; then
@@ -39,31 +44,22 @@ jobs:
             echo "Repository already exists."
           fi
 
-      # Configure Docker for Artifact Registry authentication
+      # ✅ Configure Docker for Artifact Registry authentication
       - name: Authenticate Docker to Artifact Registry
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
-      # Authenticate with Google Cloud
-      # - name: Authenticate with Google Cloud
-      #   env:
-      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-      #   run: |
-      #     echo ${{ secrets.GCP_SA_KEY }} > $HOME/gcloud-key.json
-      #     gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
-      #     gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-
-      # Build the Docker image
+      # ✅ Build the Docker image
       - name: Build Docker image
         run: |
           docker build -t ${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPO_NAME}:$GITHUB_SHA .
 
-      # Push Docker image to Google Container Registry
-      - name: Push Docker image to GCR
+      # ✅ Push Docker image to Artifact Registry
+      - name: Push Docker image to Artifact Registry
         run: |
           docker push ${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPO_NAME}:$GITHUB_SHA
 
-      # Deploy to Google Cloud Run
+      # ✅ Deploy to Google Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy your-app \
