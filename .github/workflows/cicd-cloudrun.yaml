@@ -27,6 +27,7 @@ jobs:
       # Create Artifact Registry repository if it doesn't exist
       - name: Create Artifact Registry repository if it doesn't exist
         run: |
+          $ gcloud config set account ACCOUNT
           REPO_NAME=koinx-assignment
           REGION=asia-south1
           # Check if the repository exists
