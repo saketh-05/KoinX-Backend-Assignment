@@ -26,7 +26,7 @@ jobs:
       # ✅ Set Google Cloud service account
       - name: Activate Service Account
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > $HOME/gcloud-key.json
+          echo ${{ secrets.GCP_SA_KEY }} > $HOME/gcloud-key.json
           gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
 
       # ✅ Set Google Cloud project and region
