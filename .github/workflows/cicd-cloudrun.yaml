@@ -35,18 +35,18 @@ jobs:
       # Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment/backend:$GITHUB_SHA .
 
       # Push Docker image to Google Container Registry
       - name: Push Docker image to GCR
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment/backend:$GITHUB_SHA
 
       # Deploy to Google Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy your-app \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment-backend:$GITHUB_SHA \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/koinx-assignment/backend:$GITHUB_SHA \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
