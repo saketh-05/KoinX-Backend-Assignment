@@ -50,7 +50,7 @@ jobs:
       # ✅ Configure Docker for Artifact Registry authentication
       - name: Authenticate Docker to Artifact Registry
         run: |
-          gcloud auth configure-docker --location=${{ secrets.REGION }} ${REGION}-docker.pkg.dev
+          gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
       # ✅ Build the Docker image
       - name: Build Docker image
