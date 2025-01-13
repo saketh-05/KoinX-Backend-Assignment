@@ -62,9 +62,7 @@ router.get("/stats", async (req, res) => {
       });
   }
   try {
-    const data = await CryptoData.findOne({ coinId: coin }).sort({
-      timestamp: -1,
-    });
+    const data = await CryptoData.find({ coinId: coin }).sort({timestamp: -1}).limit(1).lean();
 
     if (!data)
       return res
@@ -96,23 +94,49 @@ router.get("/deviation", async (req, res) => {
     });
   }
   try {
-    const records = await CryptoData.find({ coinId: coin })
-      .sort({ timestamp: -1 })
-      .limit(100);
-    if (records.length === 0)
-      return res
-        .status(404)
-        .json({ error: "No data found for the requested coin" });
-
-    const prices = records.map((record) => record.price);
-    const mean = prices.reduce((a, b) => a + b, 0) / prices.length;
-
-    const variance =
-      prices.reduce((acc, price) => acc + Math.pow(price - mean, 2), 0) /
-      prices.length;
-    const deviation = Math.sqrt(variance);
-
-    res.json({ deviation: deviation.toFixed(5) });
+    const records = await CryptoData.aggregate([
+      { $match: { coinId: coin } },
+      { $sort: { timestamp: -1 } },
+      { $limit: 100 },
+      {
+        $group: {
+          _id: null,
+          prices: { $push: "$price" },
+          mean: { $avg: "$price" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          prices: 1,
+          mean: 1,
+          variance: {
+            $reduce: {
+              input: "$prices",
+              initialValue: 0,
+              in: {
+                $add: [
+                  "$$value",
+                  { $pow: [{ $subtract: ["$$this", "$mean"] }, 2] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          deviation: { $sqrt: { $divide: ["$variance", 100] } },
+        },
+      },
+    ]);
+  
+    if (records.length === 0) {
+      return res.status(404).json({ error: "No data found for the requested coin" });
+    }
+  
+    const deviation = records[0].deviation.toFixed(5);
+    res.json({ deviation });
   } catch (error) {
     res.status(500).json({ error: "Server Error" });
   }

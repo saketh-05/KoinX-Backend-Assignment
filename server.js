@@ -7,7 +7,7 @@ var port = process.env.PORT || 8080;
 app.use('/', routes.router);
 
 app.listen(port, () => {
-    console.log('Server is up and running on port 3000');
+    console.log('Server is up and running on port number ' + port);
 });
 
 var task = cron.schedule('0 */2 * * *', () => {

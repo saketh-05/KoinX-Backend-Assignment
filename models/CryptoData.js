@@ -9,10 +9,11 @@ const cryptoDataSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
+cryptoDataSchema.index({ coinId: 1, timestamp: -1 }, { unique: true });
 // Update the connection string with your MongoDB Atlas connection string
 const uri = process.env.MONGO_DB_ATLAS_URI;
 mongoose
-  .connect(uri,{dbName:"CoinGeckoData"})
+  .connect(uri, { dbName: "CoinGeckoData", maxPoolSize: 10 })
   .then(() => {
     console.log("Connected to MongoDB Atlas");
   })
