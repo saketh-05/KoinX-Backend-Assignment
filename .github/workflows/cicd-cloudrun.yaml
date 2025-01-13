@@ -55,12 +55,12 @@ jobs:
       # ✅ Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}:$GITHUB_SHA .
+          docker build -t ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}/${{secrets.IMAGE_NAME}}:$GITHUB_SHA .
 
       # ✅ Push Docker image to Artifact Registry
       - name: Push Docker image to Artifact Registry
         run: |
-          docker push ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}:$GITHUB_SHA
+          docker push ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}/${{secrets.IMAGE_NAME}}:$GITHUB_SHA
 
       # ✅ Deploy to Google Cloud Run
       - name: Deploy to Cloud Run
