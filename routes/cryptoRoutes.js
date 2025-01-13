@@ -62,7 +62,7 @@ router.get("/stats", async (req, res) => {
       });
   }
   try {
-    const data = await CryptoData.find({ coinId: coin }).sort({timestamp: -1}).limit(1).lean();
+    const data = await CryptoData.findOne({ coinId: coin }).sort({timestamp: -1});
 
     if (!data)
       return res
@@ -74,6 +74,7 @@ router.get("/stats", async (req, res) => {
       marketCap: data.marketCap,
       "24hChange": data.change24h,
     });
+
   } catch (e) {
     res.status(500).json({ error: "Server error - " + e });
   }

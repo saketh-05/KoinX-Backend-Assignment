@@ -70,3 +70,4 @@ jobs:
             --platform managed \
             --region ${{secrets.REGION}} \
             --allow-unauthenticated
+            --set-env-vars PORT=${{secrets.PORT}} MONGO_DB_ATLAS_URI=${{secrets.MONGO_DB_ATLAS_URI}} COIN_GECKO_API=${{secrets.COIN_GECKO_API}}
