@@ -26,12 +26,6 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      # # ✅ Set Google Cloud service account
-      # - name: Activate Service Account
-      #   run: |
-      #     echo ${{ secrets.GCP_SA_KEY }} > $HOME/gcloud-key.json
-      #     gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
-
       # ✅ Set Google Cloud project and region
       - name: Set GCloud config
         run: |
@@ -55,7 +49,9 @@ jobs:
       # ✅ Configure Docker for Artifact Registry authentication
       - name: Authenticate Docker to Artifact Registry
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          gcloud artifacts repositories configure-docker \
+          --location=${{ secrets.REGION }} \
+          ${REGION}-docker.pkg.dev
 
       # ✅ Build the Docker image
       - name: Build Docker image
