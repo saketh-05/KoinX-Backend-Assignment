@@ -50,23 +50,23 @@ jobs:
       # ✅ Configure Docker for Artifact Registry authentication
       - name: Authenticate Docker to Artifact Registry
         run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+          gcloud auth configure-docker ${{secrets.REGION}}-docker.pkg.dev
 
       # ✅ Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t ${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPO_NAME}:$GITHUB_SHA .
+          docker build -t ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}:$GITHUB_SHA .
 
       # ✅ Push Docker image to Artifact Registry
       - name: Push Docker image to Artifact Registry
         run: |
-          docker push ${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPO_NAME}:$GITHUB_SHA
+          docker push ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}:$GITHUB_SHA
 
       # ✅ Deploy to Google Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy your-app \
-            --image ${REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${REPO_NAME}:$GITHUB_SHA \
+            --image ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}:$GITHUB_SHA \
             --platform managed \
-            --region ${REGION} \
+            --region ${{secrets.REGION}} \
             --allow-unauthenticated

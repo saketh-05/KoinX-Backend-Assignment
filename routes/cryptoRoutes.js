@@ -21,14 +21,16 @@ const fetchData = async () => {
       method: "GET",
     });
     //console.log("Data fetched from the API successfully - ", response.data);
+    const istoffset = 5.5 * 60;
     const data = Object.keys(response.data).map((coinId) => {
       const coin = response.data[coinId];
+      const date = new Date();
       return {
         coinId,
         price: coin.usd,
         marketCap: coin. usd_market_cap,
         change24h: coin.usd_24h_change,
-        timestamp: new Date(),
+        timestamp: new Date(date.getTime() + (istoffset) * 60000),
       };
     });
     //console.log("Saving data to the database, data:",data);
