@@ -69,7 +69,7 @@ jobs:
             --image ${{secrets.REGION}}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPO_NAME }}/${{secrets.IMAGE_NAME}}:$GITHUB_SHA \
             --platform managed \
             --region ${{secrets.REGION}} \
-            --allow-unauthenticated
             --set-env-vars PORT=${{secrets.PORT}} \
             --set-env-vars MONGO_DB_ATLAS_URI=${{secrets.MONGO_DB_ATLAS_URI}} \
             --set-env-vars COIN_GECKO_API=${{secrets.COIN_GECKO_API}}
+            --allow-unauthenticated
