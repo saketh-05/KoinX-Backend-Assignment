@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port on which the backend service will run
-EXPOSE 3000
+EXPOSE 8080
 
 # Start the backend service
 ENTRYPOINT ["node", "server.js"]

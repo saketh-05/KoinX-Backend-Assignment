@@ -2,10 +2,11 @@ var cron = require('node-cron');
 var express = require('express');
 var app = express();
 var routes = require('./routes/cryptoRoutes');
+var port = process.env.PORT || 8080;
 
 app.use('/', routes.router);
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log('Server is up and running on port 3000');
 });
 
