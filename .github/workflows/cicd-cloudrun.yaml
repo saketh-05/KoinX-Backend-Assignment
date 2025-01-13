@@ -70,5 +70,5 @@ jobs:
             --platform managed \
             --region ${{secrets.REGION}} \
             --set-env-vars MONGO_DB_ATLAS_URI=${{secrets.MONGO_DB_ATLAS_URI}} \
-            --set-env-vars COIN_GECKO_API=${{secrets.COIN_GECKO_API}}
-            --allow-unauthenticated
+            --set-env-vars COIN_GECKO_API=${{secrets.COIN_GECKO_API}} \
+            --allow-unauthenticated 
