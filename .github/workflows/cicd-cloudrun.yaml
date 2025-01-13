@@ -38,7 +38,7 @@ jobs:
           REPO_NAME=${{ secrets.REPO_NAME }}
           REGION=${{ secrets.REGION }}
           # Check if the repository exists
-          REPO_EXISTS=$(gcloud artifacts repositories list --filter="repositoryId=$REPO_NAME" --format="value(name)")
+          REPO_EXISTS=$(gcloud artifacts repositories list --filter="name~'$REPO_NAME'" --format="value(name)")
           if [ -z "$REPO_EXISTS" ]; then
             echo "Repository does not exist, creating it now..."
             gcloud artifacts repositories create $REPO_NAME --repository-format=docker --location=$REGION
