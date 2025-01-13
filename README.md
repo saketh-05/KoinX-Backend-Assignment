@@ -2,6 +2,9 @@
 
 This repository contains the KoinX Backend Internship Assignment, focusing on building a production-grade solution with clean code, scalable architecture, and best practices.
 
+## Want to try the endpoints? 
+go to [https://koinx-assignment-994678300962.asia-south1.run.app]
+
 ## Features
 
 - **API Development**: Built using Node.js and Express.js.
